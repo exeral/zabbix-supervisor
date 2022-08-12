@@ -1,6 +1,8 @@
 # zabbix-supervisor
 A zabbix template kit to monitor supervisord
 
+inspired from https://github.com/gsskk/zabbix-supervisor
+
 grant permissions to zabbix user
 
 rather than editing sudoers and providing sudo rights, 
