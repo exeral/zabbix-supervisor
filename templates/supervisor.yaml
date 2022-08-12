@@ -1,0 +1,65 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-08-12T14:09:49Z'
+  groups:
+    -
+      uuid: 2d08a379bb1144ad9def393268521d1f
+      name: 'Process Templates'
+  templates:
+    -
+      uuid: 9f53935fff0b44a09eb51d7d50a2fc6d
+      template: 'Template Supervisor autodiscovery'
+      name: 'Template Supervisor autodiscovery'
+      groups:
+        -
+          name: 'Process Templates'
+      items:
+        -
+          uuid: cfb4c4cbe6f840138f1faf5fba053119
+          name: 'process supervisord'
+          key: 'proc.num[supervisord]'
+          delay: 5m
+          triggers:
+            -
+              uuid: 841c23369e8b49d0bb79ec705ee32b5e
+              expression: 'last(/Template Supervisor autodiscovery/proc.num[supervisord])=0'
+              name: 'supervisord process running'
+              priority: HIGH
+              tags:
+                -
+                  tag: Application
+                  value: supervisor
+      discovery_rules:
+        -
+          uuid: 6b58683f97834b6ea996103a238ccd4e
+          name: 'Supervisor discovery'
+          key: supervisor.discovery
+          delay: 1h
+          lifetime: '0'
+          item_prototypes:
+            -
+              uuid: e28117154bf84ab9aae65caa4c2b5856
+              name: 'Status of {#PROCESS_NAME}'
+              key: 'supervisor.status[{#PROCESS_NAME}]'
+              trends: '0'
+              value_type: CHAR
+              request_method: POST
+              tags:
+                -
+                  tag: Application
+                  value: 'Processes check'
+              trigger_prototypes:
+                -
+                  uuid: 6b9de8b798cc44cfb5eb072ecc4832dc
+                  expression: 'find(/Template Supervisor autodiscovery/supervisor.status[{#PROCESS_NAME}],,"like","RUNNING")=0'
+                  name: '{#PROCESS_NAME} status is error'
+                  priority: HIGH
+                  tags:
+                    -
+                      tag: Application
+                      value: supervisor
+          request_method: POST
+      tags:
+        -
+          tag: Application
+          value: supervisor
